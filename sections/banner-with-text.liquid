@@ -1,0 +1,260 @@
+{{ 'banner-with-text.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign bn = section.settings
+  assign padding_top = bn.padding_top
+  assign padding_bottom = bn.padding_bottom
+%}
+
+<style>
+  .banner-with-text {
+    padding-top: {{ padding_top }}px;
+    padding-bottom: {{ padding_bottom }}px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-color: #fff2f5;
+    background-image: url('{{ section.settings.background | image_url : width: section.settings.background.width, height : section.settings.background.height }}');
+  }
+</style>
+
+<div class="banner-with-text text-with-image-{{ section.id }}">
+  <div class="banner-with-text__wrap">
+  <div class="banner-with-text__content">
+    {%- for block in section.blocks -%}
+      {% liquid
+        assign contentTagColor = block.settings.content_tag_color
+        assign titleSize = block.settings.title_size
+        assign titleDesc = block.settings.desc_size
+        assign buttonColor = block.settings.button_color
+        assign buttonBackground = block.settings.button_background
+        assign buttonColorHover = block.settings.button_color_hover
+      %}
+      {%- case block.type -%}
+        {%- when 'heading' -%}
+          <span class="banner-with-text__content__tag">{{ block.settings.content_tag }}</span>
+          <h2 class="banner-with-text__content__title">{{ block.settings.content_title }}</h2>
+          <p class="banner-with-text__content__desc">{{ block.settings.content_brief }}</p>
+
+          <style>
+            .banner-with-text__content__tag {
+                color: {{ contentTagColor }}
+            }
+            .banner-with-text__content__title {
+              font-size: {{ titleSize }}px;
+            }
+            .banner-with-text__content__desc {
+                font-size: {{ titleDesc }}px;
+            }
+          </style>
+
+        {%- when 'buttons' -%}
+          <div class="banner-with-text__buttons{% if block.settings.button_1 != blank and block.settings.button_2 != blank %} banner-with-text__buttons__multiple{% endif %}">
+            {% if block.settings.button_1 != blank %}
+              <a
+                {% if block.settings.button_link_1 == blank %}
+                  role="link" aria-disabled="true"
+                {% else %}
+                  href="{{ block.settings.button_link_1 }}"
+                {% endif %}
+                class="button-links {{ block.settings.button_hover }}"
+              >
+                {{- block.settings.button_1 | escape -}}
+              </a>
+            {% endif %}
+            {% if block.settings.button_2 != blank %}
+              <a
+                {% if block.settings.button_link_2 == blank %}
+                  role="link" aria-disabled="true"
+                {% else %}
+                  href="{{ block.settings.button_link_1 }}"
+                {% endif %}
+                class="button-links {{ block.settings.button_hover }}"
+              >
+                {{- block.settings.button_2 | escape -}}
+              </a>
+            {% endif %}
+            <style>
+              .button-links {
+                  color: {{ buttonColor }};
+              }
+              .button-links.true:hover {
+                  background-color: {{ buttonBackground }};
+                  color: {{ buttonColorHover }};
+              }
+            </style>
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</div>
+</div>
+
+{% schema %}
+{
+  "name": "Banner with text",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "image_picker",
+      "id": "background",
+      "label": "Background"
+    },
+    {
+      "type": "number",
+      "id": "padding_top",
+      "label": "Padding top",
+      "default": 80
+    },
+    {
+      "type": "number",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Content",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "content_position",
+          "options": [
+            {
+              "value": "middle-left",
+              "label": "Middle Left"
+            },
+            {
+              "value": "middle-right",
+              "label": "Middle Right"
+            },
+            {
+              "value": "middle-center",
+              "label": "Middle Center"
+            }
+          ],
+          "default": "middle-left",
+          "label": "Middle Left"
+        },
+        {
+          "type": "text",
+          "id": "content_tag",
+          "label": "Tag",
+          "default": "Welcome"
+        },
+        {
+          "type": "color",
+          "id": "content_tag_color",
+          "label": "Tag color",
+          "default": "#96BB7C"
+        },
+        {
+          "type": "text",
+          "id": "content_title",
+          "label": "Title",
+          "default": "Best Learning Opportunities"
+        },
+        {
+          "type": "range",
+          "id": "title_size",
+          "min": 20,
+          "max": 80,
+          "step": 1,
+          "unit": "px",
+          "label": "Title size",
+          "default": 58
+        },
+        {
+          "type": "inline_richtext",
+          "id": "content_brief",
+          "label": "Description",
+          "default": "Our goal is to make online education work for everyone"
+        },
+        {
+          "type": "range",
+          "id": "desc_size",
+          "min": 16,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Description size",
+          "default": 20
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "t:sections.image-banner.blocks.buttons.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_1",
+          "default": "Join Us",
+          "label": "First button"
+        },
+        {
+          "type": "url",
+          "id": "button_link_1",
+          "label": "First button link"
+        },
+        {
+          "type": "text",
+          "id": "button_2",
+          "default": "Learn More",
+          "label": "Second button"
+        },
+        {
+          "type": "url",
+          "id": "button_link_2",
+          "label": "Second button link"
+        },
+        {
+          "type": "checkbox",
+          "id": "button_hover",
+          "label": "Button hover",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Button color",
+          "default": "#96BB7C"
+        },
+        {
+          "type": "color",
+          "id": "button_color_hover",
+          "label": "Button color hover",
+          "default": "#fff"
+        },
+        {
+          "type": "color",
+          "id": "button_background",
+          "label": "Button background hover",
+          "default": "#96BB7C"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Banner with text",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "buttons"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

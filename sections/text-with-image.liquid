@@ -1,0 +1,207 @@
+{{ 'text-with-image.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign bn = section.settings
+  assign padding_top = bn.padding_top
+  assign padding_bottom = bn.padding_bottom
+%}
+
+<style>
+  .text-with-image {
+    padding-top: {{ padding_top }}px;
+    padding-bottom: {{ padding_bottom }}px;
+  }
+</style>
+
+<div class="text-with-image text-with-image-{{ section.id }}">
+  <div class="container">
+    <div class="text-with-image__wrap">
+      {%- for block in section.blocks -%}
+        {% liquid
+          assign Image = block.settings.image
+          assign titleSize = block.settings.title_size
+          assign titleDesc = block.settings.desc_size
+          assign buttonColor = block.settings.button_color
+          assign buttonColorHover = block.settings.button_color_hover
+        %}
+        {%- case block.type -%}
+          {%- when 'image' -%}
+            <div class="text-with-image__img">
+              <img
+                src="{{ Image | image_url: width: Image.width }}"
+                alt="{{ Image.alt | escape }}"
+                loading="lazy"
+                width="{{ Image.width }}"
+                height="{{ Image.height }}"
+              >
+            </div>
+          {%- when 'content' -%}
+            <div class="text-with-image__content">
+              <div class="text-with-image__content__wrap">
+                <h2 class="text-with-image__content__title">{{ block.settings.content_title }}</h2>
+                <p class="text-with-image__content__desc">{{ block.settings.content_brief }}</p>
+                {% if block.settings.button != blank %}
+                  <div class="text-with-image__btn">
+                    <a
+                      {% if block.settings.button_link == blank %}
+                        role="link" aria-disabled="true"
+                      {% else %}
+                        href="{{ block.settings.button_link }}"
+                      {% endif %}
+                      class="button-links {{ block.settings.button_hover }}"
+                    >
+                      {{- block.settings.button | escape -}}
+                    </a>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="17" viewBox="0 0 9 17" fill="none">
+                      <g clip-path="url(#clip0_2636_3164)">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M0.180771 0.680771C0.237928 0.623469 0.305828 0.578007 0.380583 0.546987C0.455337 0.515967 0.535477 0.5 0.616412 0.5C0.697347 0.5 0.777487 0.515967 0.852241 0.546987C0.926996 0.578007 0.994896 0.623469 1.05205 0.680771L8.4358 8.06452C8.4931 8.12168 8.53857 8.18958 8.56959 8.26433C8.60061 8.33909 8.61657 8.41923 8.61657 8.50016C8.61657 8.5811 8.60061 8.66123 8.56959 8.73599C8.53857 8.81074 8.4931 8.87864 8.4358 8.9358L1.05205 16.3196C0.936514 16.4351 0.779809 16.5 0.616412 16.5C0.453015 16.5 0.29631 16.4351 0.180771 16.3196C0.0652316 16.204 0.000322157 16.0473 0.000322157 15.8839C0.000322157 15.7205 0.0652316 15.5638 0.180771 15.4483L7.13011 8.50016L0.180771 1.55205C0.123469 1.4949 0.078006 1.427 0.0469863 1.35224C0.0159666 1.27749 0 1.19735 0 1.11641C0 1.03548 0.0159666 0.955338 0.0469863 0.880583C0.078006 0.805829 0.123469 0.737928 0.180771 0.680771Z" fill="#96BB7C"/>
+                      </g>
+                      <defs>
+                      <clipPath id="clip0_2636_3164">
+                      <rect width="9" height="16" fill="white" transform="translate(0 0.5)"/>
+                      </clipPath>
+                      </defs>
+                    </svg>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+            <style>
+              .text-with-image__content__title {
+                font-size: clamp(2rem, 7vw, {{ titleSize }}px);
+              }
+              .text-with-image__content__desc {
+                  font-size: {{ titleDesc }}px;
+                }
+                .text-with-image__btn .button-links {
+                    color: {{ buttonColor }};
+                }
+                .text-with-image__btn svg path {
+                    fill: {{ buttonColor }};
+                }
+                .text-with-image__btn .button-links:hover {
+                    color: {{ buttonColorHover }};
+                }
+                .text-with-image__btn:hover svg path {
+                    fill: {{ buttonColorHover }};
+                }
+            </style>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Text with image",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "number",
+      "id": "padding_top",
+      "label": "Padding top",
+      "default": 80
+    },
+    {
+      "type": "number",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background"
+        }
+      ]
+    },
+    {
+      "type": "content",
+      "name": "Content",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "content_title",
+          "label": "Title",
+          "default": "Approdable Packages"
+        },
+        {
+          "type": "range",
+          "id": "title_size",
+          "min": 20,
+          "max": 80,
+          "step": 1,
+          "unit": "px",
+          "label": "Title size",
+          "default": 40
+        },
+        {
+          "type": "inline_richtext",
+          "id": "content_brief",
+          "label": "Description",
+          "default": "Problems trying to resolve the conflict between the two major realms of Classical physics: Newtonian mechanics"
+        },
+        {
+          "type": "range",
+          "id": "desc_size",
+          "min": 14,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Description size",
+          "default": 14
+        },
+        {
+          "type": "text",
+          "id": "button",
+          "default": "Learn More",
+          "label": "Button"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Button color",
+          "default": "#96BB7C"
+        },
+        {
+          "type": "color",
+          "id": "button_color_hover",
+          "label": "Button color hover",
+          "default": "#fff"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Text with image",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "content"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

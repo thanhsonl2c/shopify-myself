@@ -1,0 +1,114 @@
+.text-with-image {
+    .text-with-image__wrap {
+        display: flex;
+        align-items: center;
+        gap: 60px;
+    }
+
+    .text-with-image__img {
+        flex: 1;
+        width: 50%;
+
+        img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+    }
+
+    .text-with-image__content {
+        flex: 1;
+        width: 50%;
+    }
+
+    .text-with-image__content__title {
+        margin: 0;
+        margin-bottom: 35px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        line-height: 50px;
+        color: #252B42;
+        position: relative;
+
+        &::before {
+            content: '';
+            position: absolute;
+            width: 94px;
+            height: 7px;
+            background-color: #E74040;
+            top: -35px;
+            left: 0;
+        }
+    }
+
+    .text-with-image__content__desc {
+        margin: 0;
+        margin-bottom: 35px;
+        color: #737373;
+        font-weight: 400;
+        width: 350px;
+        max-width: 100%;
+        letter-spacing: 0.2px;
+    }
+
+    .button-links {
+        text-decoration: none;
+        font-size: 14px;
+        line-height: 24px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        transition: all 0.3s ease;
+    }
+
+    .text-with-image__btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+.container {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+@media (max-width:1024px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+@media (max-width:768px) {
+    .container {
+        max-width: 720px;
+    }
+
+    .text-with-image {
+        padding-bottom: 50px !important;
+        .text-with-image__wrap {
+            display: block !important;
+    
+            .text-with-image__img {
+                width: 100%;
+                margin-bottom: 70px;
+            }
+    
+            .text-with-image__content {
+                width: 100%;
+    
+                .text-with-image__content__desc {
+                    width: 100%;
+                }
+            }
+    
+        }
+    }
+
+}
+
+@media (max-width:576px) {
+    .container {
+        max-width: 540px;
+    }
+}
